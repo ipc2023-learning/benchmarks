@@ -9,7 +9,7 @@ def execute_command(command: List[str], **kwargs) -> int:
     output_dir = kwargs["output_dir"] if "output_dir" in kwargs else "."
     stdout = open(output_dir + "/" + kwargs["stdout"], 'w') if "stdout" in kwargs else None
     stderr = open(output_dir + "/" + kwargs["stderr"], 'w') if "stderr" in kwargs else None
-    print(" ".join(map(str, command)))
+    #print(" ".join(map(str, command)))
     logging.debug(f'Executing "{" ".join(map(str, command))}" on directory "{cwd}"')
     if stdout:
         logging.debug(f'Standard output redirected to "{stdout.name}"')
@@ -30,18 +30,18 @@ def execute_command(command: List[str], **kwargs) -> int:
     return ret_code
 
 
-def run_fd(task: str, output_dir: str = ".") -> Union[List[str], None]:
+def run_fd(task: str, instance_id: int, output_dir: str = ".") -> Union[List[str], None]:
     """ Run Fast Downward on a given domain and instance, and return a plan,
     or None if the problem is not solvable. """
     args = task.split()
     # ToDo: add fast-downward.py as a requirement (accessible from /usr/bin/ folder)
-    ret_code = execute_command(command=['fast-downward.py'] + args, stdout="stdout", output_dir=output_dir)
+    ret_code = execute_command(command=['fast-downward.py'] + args, stdout=f"{instance_id}.stdout", output_dir=output_dir)
     if ret_code != 0:
         logging.error("Fast Downward error")
         return None
 
     plan = []
-    with open(f'{output_dir}/plan.txt', 'r') as f:
+    with open(f'{output_dir}/{instance_id}.plan', 'r') as f:
         # Read up all lines in plan file that do not start with a comment character ";"
         plan = [line for line in f.read().splitlines() if not line.startswith(';')]
     return plan
@@ -62,13 +62,14 @@ def main():
 			 'lama': "--alias lama-first ", 
 			 'opt': "--alias seq-opt-lmcut"}
 			 
+	instance_id = instance.split("/")[-1].split(".")[0]		 
 	task = ""
 	if 'blind' == mode:
-		task = f"--plan-file plan.txt {domain} {instance} {modes[mode]}"
+		task = f"--plan-file {instance_id}.plan --sas-file {instance_id}.sas {domain} {instance} {modes[mode]}"
 	else:  # alias
-		task = f"{modes[mode]} --plan-file plan.txt {domain} {instance}"
+		task = f"{modes[mode]} --plan-file {instance_id}.plan --sas-file {instance_id}.sas {domain} {instance}"
 	
-	plan = run_fd(task=task)
+	plan = run_fd(task=task, instance_id=instance_id)
 	if plan:
 		print(f"{plan}")
 
