@@ -1,0 +1,2 @@
+rm *.stdout *.sas *.plan
+
