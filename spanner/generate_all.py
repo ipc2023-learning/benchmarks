@@ -1,4 +1,5 @@
 from benchmarking_utils import execute_command
+import logging
 
 
 def get_next_config(starting_spanners: int = 1,
@@ -13,6 +14,7 @@ def get_next_config(starting_spanners: int = 1,
                     seed: int = 42):
     instance_id, spanners, nuts, locations = 1, starting_spanners, starting_nuts, starting_locations
     while instance_id <= max_instance_id:
+        # print(f"s={spanners}; n={nuts}; l={locations}")
         yield f"python spanner.py -s {spanners} -n {nuts} -l {locations} -o {out_folder} -i {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
@@ -24,7 +26,7 @@ def get_next_config(starting_spanners: int = 1,
         else:
             locations, nuts = starting_locations, starting_nuts
             spanners += step_spanners
-    #raise StopIteration()
+    # raise StopIteration()
 
 
 def main():
@@ -35,9 +37,10 @@ def main():
     starting_locations = [1, 1, 10, 50]
     step_locations = [10, 10, 20, 50]
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]
-    max_ids = [100, 30, 30, 30]
+    max_ids = [99, 30, 30, 30]
     seeds = [42, 1007, 1007, 1007]
     for experiment in range(4):
+        # print(output_folders[experiment])
         for command in get_next_config(
                 starting_spanners=starting_spanners[experiment],
                 step_spanners=step_spanners[experiment],
@@ -49,7 +52,7 @@ def main():
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
             ret_code = execute_command(command=command.split())
-            print(f"Executed command={command}; result={ret_code}")
+            logging.info(f"Executed command={command}; result={ret_code}")
 
 
 if __name__ == "__main__":
