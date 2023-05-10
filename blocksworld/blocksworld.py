@@ -15,7 +15,7 @@ def get_objects(num_blocks):
 def get_state(num_blocks: int, is_goal: bool = False ) -> str:
     str_state = "\n"
     if not is_goal:
-	    str_state = str_state + "    (handempty)\n"
+        str_state = str_state + "    (handempty)\n"
 
     vblocks = list(range(1, num_blocks+1))
     random.shuffle(vblocks)
@@ -90,15 +90,15 @@ def generate_domain():
 
 def main():
     parser = argparse.ArgumentParser(description="Blocksworld generator")
-    parser.add_argument("-f", "--from_nth", type=int, required=True)
-    parser.add_argument("-t", "--to_nth", type=int, required=True)
+    parser.add_argument("-f", "--from_blocks", type=int, required=True)
+    parser.add_argument("-t", "--to_blocks", type=int, required=True)
     parser.add_argument("-s", "--step", type=int, nargs='?', default=1, required=False)
     parser.add_argument("-o", "--out_folder", type=str, required=True)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
-    from_nth = args.from_nth
-    to_nth = args.to_nth
+    from_nth = args.from_blocks
+    to_nth = args.to_blocks
     step = args.step
     out_folder = args.out_folder
     seed = args.seed
