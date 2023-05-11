@@ -57,7 +57,7 @@ def parse_args() -> Dict[str, int]:
     parser.add_argument("-s", "--spanners", type=int, help="number of spanners (min 1)", required=True)
     parser.add_argument("-n", "--nuts", type=int, help="number of nuts (min 1 and <= spanners)", required=True)
     parser.add_argument("-l", "--locations", type=int, help="number of locations (min 1)", required=True)
-    parser.add_argument("--seed", type=int, default=42, help="random seed (default: use time-based seed)")
+    parser.add_argument("--seed", type=int, default=42, help="random seed (default: 42)")
     parser.add_argument("-o", "--out_folder", type=str, default=".", help="output folder (default: \".\")")
     parser.add_argument("-i", "--instance_id", type=int, default=0, help="instance id (default: 0)")
 
