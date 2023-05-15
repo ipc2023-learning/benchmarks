@@ -16,9 +16,9 @@ def get_objects(rows: int, columns: int, robots: int, **kwargs: dict) -> str:
     offset = "\n    "
 
     # -- tiles
-    str_objects = offset + offset.join([get_tile(r+1, c+1)
-                                        for r in range(rows)
-                                        for c in range(columns)]) + " - tile"
+    str_objects = offset + offset.join([get_tile(r, c)
+                                        for r in range(0, 1+rows)
+                                        for c in range(1, 1+columns)]) + " - tile"
 
     # -- robots
     str_objects += offset + offset.join([f"robot{i+1}" for i in range(robots)]) + " - robot"
@@ -40,7 +40,7 @@ def get_init(rows: int, columns: int, robots: int, **kwargs: dict) -> str:
     robots_at = set()
     # Robot locations and colors
     for r in range(robots):
-        row = random.randint(1, rows)  # get random row
+        row = random.randint(0, rows)  # get random row
         robots_at.add((row, robot_cols[r]))
         str_init += offset + f"(robot-at robot{r+1} {get_tile(row,robot_cols[r])})"
         robot_color = random.choice(["white", "black"])
@@ -51,23 +51,23 @@ def get_init(rows: int, columns: int, robots: int, **kwargs: dict) -> str:
     str_init += offset + "(available-color black)"
 
     # Clear locations
-    for r in range(1, 1+rows):
+    for r in range(0, 1+rows):
         for c in range(1, 1+columns):
             if (r, c) not in robots_at:
                 str_init += offset + f"(clear {get_tile(r, c)})"
 
     # Up direction
     str_init += offset + offset.join([f"(up {get_tile(r+1,c)} {get_tile(r, c)} )"
-                                      for r in range(1, rows) for c in range(1, 1+columns)])
+                                      for r in range(0, rows) for c in range(1, 1+columns)])
     # Down direction
     str_init += offset + offset.join([f"(down {get_tile(r-1, c)} {get_tile(r, c)} )"
-                                      for r in range(2, 1+rows) for c in range(1, 1+columns)])
+                                      for r in range(1, 1+rows) for c in range(1, 1+columns)])
     # Left direction
     str_init += offset + offset.join([f"(left {get_tile(r, c-1)} {get_tile(r, c)} )"
-                                      for r in range(1, 1+rows) for c in range(2, 1+columns)])
+                                      for r in range(0, 1+rows) for c in range(2, 1+columns)])
     # Right direction
     str_init += offset + offset.join([f"(right {get_tile(r, c+1)} {get_tile(r, c)} )"
-                                      for r in range(1, 1+rows) for c in range(1, columns)])
+                                      for r in range(0, 1+rows) for c in range(1, columns)])
 
     return str_init
 
