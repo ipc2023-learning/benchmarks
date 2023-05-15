@@ -25,7 +25,7 @@ def main():
     else:  # alias
         task = f"{modes[mode]} --plan-file {instance_id}.plan --sas-file {instance_id}.sas {domain} {instance}"
 
-    plan = run_fd(task=task, instance_id=instance_id)
+    plan = run_fd(task=task, instance_id=instance_id, verbose=verbose)
     if plan and verbose:
         print(f"{plan}")
 

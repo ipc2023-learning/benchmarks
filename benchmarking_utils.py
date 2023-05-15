@@ -29,12 +29,15 @@ def execute_command(command: List[str], **kwargs) -> int:
     return ret_code
 
 
-def run_fd(task: str, instance_id: int, output_dir: str = ".") -> Union[List[str], None]:
+def run_fd(task: str, instance_id: int, output_dir: str = ".", verbose: bool = False) -> Union[List[str], None]:
     """ Run Fast Downward on a given domain and instance, and return a plan,
     or None if the problem is not solvable. """
-    args = task.split()
+    command = ['fast-downward.py'] + task.split()
+    if verbose:
+        print(f"Executing command: {' '.join(command)}")
+        
     # ToDo: add fast-downward.py as a requirement (accessible from /usr/bin/ folder)
-    ret_code = execute_command(command=['fast-downward.py'] + args,
+    ret_code = execute_command(command=command,
                                stdout=f"{instance_id}.stdout",
                                output_dir=output_dir)
     if ret_code != 0:

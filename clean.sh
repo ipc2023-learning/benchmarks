@@ -1,2 +1,2 @@
-rm *.stdout *.sas *.plan
+rm -rf *.stdout *.sas *.plan __pycache__/
 
