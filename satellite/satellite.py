@@ -44,7 +44,7 @@ def get_init(satellites: int, instruments: int, modes: int, directions: int, **k
     random.shuffle(satellite_ids)
     onboard_instruments = [f"(on_board ins{s} sat{satellite_ids[s-1]})" for s in range(1, 1+satellites)]
     # 4.b. the rest of instruments randomly assigned
-    onboard_instruments.extend([f"(on_board ins{i} sat{random.randint(1, 1+satellites)})"
+    onboard_instruments.extend([f"(on_board ins{i} sat{random.randint(1, satellites)})"
                                 for i in range(1+satellites, 1+instruments)])
     str_init += offset + offset.join(onboard_instruments)
     # 5. keep adding what each instrument support until all instruments have at

@@ -12,7 +12,7 @@
     (calibration_target ins1 dir1)
     (calibration_target ins2 dir1)
     (on_board ins1 sat1)
-    (on_board ins2 sat2)
+    (on_board ins2 sat1)
     (supports ins2 mod2)
     (supports ins2 mod1)
     (supports ins1 mod1))
