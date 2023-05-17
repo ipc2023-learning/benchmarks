@@ -138,9 +138,9 @@ def get_init(
         modes = get_modes()
         random.shuffle(modes)
         num_modes = random.randint(1, len(modes))
-        modes_supported.add(m for m in modes[0:num_modes])
-        str_init += offset + offset.join([f"(supports {get_camera(c)} {m})"
-                                          for m in modes[0:num_modes]])
+        for m in modes[0:num_modes]:
+            modes_supported.add(m)
+        str_init += offset + offset.join([f"(supports {get_camera(c)} {m})" for m in modes[0:num_modes]])
 
     # Unsupported modes are randomly assigned to random cameras
     all_cameras = [get_camera(c) for c in range(1, 1+cameras)]
@@ -198,7 +198,7 @@ def parse_args() -> Dict[str, int]:
     parser.add_argument("-r", "--rovers", type=int, help="number of rovers (min 1)", required=True)
     parser.add_argument("-w", "--waypoints", type=int, help="number of waypoints (min 2)", required=True)
     parser.add_argument("-c", "--cameras", type=int, help="number of cameras (min 1)", required=True)
-    parser.add_argument("-o", "--objectives", type=int, help="number of objectives (min 0)", required=True)
+    parser.add_argument("-o", "--objectives", type=int, help="number of objectives (min 1)", required=True)
     parser.add_argument("--seed", type=int, default=42, help="random seed (default: 42)")
     parser.add_argument("-out", "--out_folder", type=str, default=".", help="output folder (default: \".\")")
     parser.add_argument("-id", "--instance_id", type=int, default=0, help="instance id (default: 0)")
@@ -222,8 +222,8 @@ def parse_args() -> Dict[str, int]:
     if cameras < 1:
         logging.error(f" At least 1 camera required (input: cameras={cameras})\n")
         sys.exit(-3)
-    if objectives < 0:
-        logging.error(f" Objectives cannot be negative (input: objectives={objectives})\n")
+    if objectives < 1:
+        logging.error(f" At least 1 objective requiredinput: objectives={objectives})\n")
         sys.exit(-4)
 
     # Initialize data
