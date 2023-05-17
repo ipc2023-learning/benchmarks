@@ -6,6 +6,7 @@ import random
 import sys
 import logging
 from typing import Dict, List
+from benchmarking_utils import random_connected_graph
 
 
 def get_objects(vehicles: int, packages: int, locations: int, max_capacity: int, **kwargs: dict) -> str:
@@ -45,29 +46,7 @@ def get_init(vehicles: int, packages: int, locations: int, max_capacity: int, **
                              for i in range(1, 1 + vehicles)]) + offset
 
     # Generate random graph
-    ## 1. generate a random tree
-    inserted_nodes = []
-    remaining_nodes = [loc for loc in range(1, 1+locations)]
-    random.shuffle(remaining_nodes)  # pick nodes in any order
-    inserted_nodes.append(remaining_nodes[0])  # add the first element
-    graph = set()
-    for node in remaining_nodes[1:]:
-        connect_to = random.choice(inserted_nodes)
-        # It is an undirected graph
-        graph.add((node, connect_to))
-        graph.add((connect_to, node))
-        # Mark current node as inserted
-        inserted_nodes.append(node)
-
-    ## 2. complete the graph until edge_density
-    edge_density = random.randint(locations - 1, locations * (locations - 1) // 2)
-    remaining_edges = [(i,j) for i in range(1, locations+1) for j in range(i+1, 1+locations) if (i,j) not in graph]
-    random.shuffle(remaining_edges)
-    for i in range(edge_density+1-locations):
-        graph.add(remaining_edges[i])
-        graph.add((remaining_edges[i][1], remaining_edges[i][0]))
-
-    ## 3. print the graph
+    graph = random_connected_graph(nodes=locations)
     str_init += offset.join([f"(road l{l1} l{l2})" for l1, l2 in graph]) + offset
 
     return str_init, origins

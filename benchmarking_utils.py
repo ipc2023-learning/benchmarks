@@ -2,6 +2,7 @@ import logging
 import subprocess
 from typing import List, Union
 import os
+import random
 
 
 def execute_command(command: List[str], **kwargs) -> int:
@@ -49,3 +50,28 @@ def run_fd(task: str, instance_id: int, output_dir: str = ".", verbose: bool = F
         plan = [line for line in f.read().splitlines() if not line.startswith(';')]
     return plan
 
+
+def random_connected_graph(nodes: int) -> set:
+    # 1. generate a random tree
+    inserted_nodes = []
+    remaining_nodes = [n for n in range(1, 1 + nodes)]
+    random.shuffle(remaining_nodes)  # pick nodes in any order
+    inserted_nodes.append(remaining_nodes[0])  # add the first element
+    graph = set()
+    for node in remaining_nodes[1:]:
+        connect_to = random.choice(inserted_nodes)
+        # It is an undirected graph
+        graph.add((node, connect_to))
+        graph.add((connect_to, node))
+        # Mark current node as inserted
+        inserted_nodes.append(node)
+
+    # 2. complete the graph until edge_density
+    edge_density = random.randint(nodes - 1, nodes * (nodes - 1) // 2)
+    remaining_edges = [(i, j) for i in range(1, nodes + 1) for j in range(i+1, 1+nodes) if (i, j) not in graph]
+    random.shuffle(remaining_edges)
+    for i in range(edge_density + 1 - nodes):
+        graph.add(remaining_edges[i])
+        graph.add((remaining_edges[i][1], remaining_edges[i][0]))
+
+    return graph
