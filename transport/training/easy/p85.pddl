@@ -24,7 +24,6 @@
     (at v3 l1)
     (road l2 l4)
     (road l1 l5)
-    (road l3 l1)
     (road l5 l4)
     (road l5 l1)
     (road l4 l2)
@@ -32,6 +31,7 @@
     (road l4 l5)
     (road l3 l2)
     (road l1 l3)
+    (road l3 l1)
     )
  (:goal  (and 
     (at p1 l4)

@@ -46,7 +46,7 @@ def get_init(vehicles: int, packages: int, locations: int, max_capacity: int, **
                              for i in range(1, 1 + vehicles)]) + offset
 
     # Generate random graph
-    graph = random_connected_graph(nodes=locations)
+    graph, _ = random_connected_graph(nodes=locations)
     str_init += offset.join([f"(road l{l1} l{l2})" for l1, l2 in graph]) + offset
 
     return str_init, origins

@@ -25,11 +25,11 @@
     (road l2 l3)
     (road l4 l5)
     (road l3 l6)
-    (road l5 l3)
     (road l3 l2)
     (road l6 l3)
     (road l1 l3)
     (road l3 l5)
+    (road l5 l3)
     )
  (:goal  (and 
     (at p1 l6)

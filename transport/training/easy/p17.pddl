@@ -23,8 +23,8 @@
     (road l4 l3)
     (road l5 l4)
     (road l4 l2)
-    (road l1 l4)
     (road l4 l5)
+    (road l1 l4)
     (road l4 l1)
     )
  (:goal  (and 

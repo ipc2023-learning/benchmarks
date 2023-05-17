@@ -21,10 +21,10 @@
     (road l3 l4)
     (road l4 l3)
     (road l3 l1)
-    (road l4 l1)
     (road l4 l2)
-    (road l1 l4)
     (road l1 l3)
+    (road l1 l4)
+    (road l4 l1)
     )
  (:goal  (and 
     (at p1 l1)
