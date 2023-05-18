@@ -42,14 +42,14 @@ def get_next_config(starting_rovers: int = 1,
 
 
 def main():
-    starting_rovers = [1, 1, 5, 10]
-    step_rovers = [1, 1, 2, 5]
-    starting_waypoints = [2, 4, 10, 30]
-    step_waypoints = [1, 3, 20, 10]
-    starting_cameras = [1, 2, 5, 10]
-    step_cameras = [1, 1, 2, 5]
-    starting_objectives = [1, 2, 10, 30]
-    step_objectives = [1, 1, 5, 10]
+    starting_rovers = [1, 1, 10, 20]
+    step_rovers = [1, 1, 5, 10]
+    starting_waypoints = [2, 4, 10, 50]
+    step_waypoints = [1, 3, 25, 50]
+    starting_cameras = [1, 2, 10, 20]
+    step_cameras = [1, 1, 10, 20]
+    starting_objectives = [1, 2, 15, 30]
+    step_objectives = [1, 1, 10, 20]
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]
     max_ids = [99, 30, 30, 30]
     seeds = [42, 1007, 1007, 1007]

@@ -104,7 +104,7 @@
     (can_traverse rover2 waypoint3 waypoint6)
     (can_traverse rover2 waypoint6 waypoint3)
     (calibration_target camera1 objective1)
-    (on_board camera1 rover2)
+    (on_board camera1 rover1)
     (supports camera1 low_res)
     (supports camera1 colour)
     (supports camera1 high_res)

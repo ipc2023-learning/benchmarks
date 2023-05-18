@@ -91,8 +91,8 @@ def get_init(
     str_init += offset + offset.join([f"(equipped_for_rock_analysis {r})"
                                       for r in all_rovers[0:random.randint(1, rovers)]])
     random.shuffle(all_rovers)
-    str_init += offset + offset.join([f"(equipped_for_imaging {r})"
-                                      for r in all_rovers[0:random.randint(1, rovers)]])
+    imaging_rovers = all_rovers[0:random.randint(1, rovers)]
+    str_init += offset + offset.join([f"(equipped_for_imaging {r})" for r in imaging_rovers])
 
     # One empty store per rover
     str_init += offset + offset.join([f"(empty {get_store(r)})" for r in range(1, 1+rovers)])
@@ -130,9 +130,9 @@ def get_init(
         r_obj = random.randint(1, objectives)
         str_init += offset + f"(calibration_target {get_camera(c)} {get_objective(r_obj)})"
 
-        # Cameras are on board random rovers
-        r_rov = random.randint(1, rovers)
-        str_init += offset + f"(on_board {get_camera(c)} {get_rover(r_rov)})"
+        # Cameras are on board random rovers that are already equipped for imaging
+        r_rov = random.choice(imaging_rovers)
+        str_init += offset + f"(on_board {get_camera(c)} {r_rov})"
 
         # Cameras have between 1 and 3 random modes
         modes = get_modes()

@@ -80,7 +80,7 @@
     (supports camera1 low_res)
     (supports camera1 high_res)
     (calibration_target camera2 objective1)
-    (on_board camera2 rover2)
+    (on_board camera2 rover1)
     (supports camera2 low_res)
     (supports camera2 high_res)
     (supports camera2 colour)

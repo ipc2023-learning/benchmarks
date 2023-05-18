@@ -121,7 +121,7 @@
     (supports camera1 colour)
     (supports camera1 high_res)
     (calibration_target camera2 objective2)
-    (on_board camera2 rover2)
+    (on_board camera2 rover1)
     (supports camera2 low_res)
     (supports camera2 high_res)
     (visible_from objective1 waypoint8)
