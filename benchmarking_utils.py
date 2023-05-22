@@ -8,6 +8,7 @@ import random
 def execute_command(command: List[str], **kwargs) -> int:
     cwd = kwargs["cwd"] if "cwd" in kwargs else os.getcwd()
     output_dir = kwargs["output_dir"] if "output_dir" in kwargs else "."
+    shell = kwargs["shell"] if "shell" in kwargs else False
     stdout = open(output_dir + "/" + kwargs["stdout"], 'w') if "stdout" in kwargs else None
     stderr = open(output_dir + "/" + kwargs["stderr"], 'w') if "stderr" in kwargs else None
     logging.debug(f'Executing "{" ".join(map(str, command))}" on directory "{cwd}"')
@@ -16,7 +17,7 @@ def execute_command(command: List[str], **kwargs) -> int:
     if stderr:
         logging.debug(f'Standard error redirected to "{stderr.name}"')
 
-    ret_code = subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
+    ret_code = subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr, shell=shell)
 
     if stdout:
         stdout.close()

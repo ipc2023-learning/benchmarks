@@ -1,5 +1,9 @@
+;; source: https://github.com/AI-Planning/pddl-generators/blob/main/blocksworld/domain.pddl
+;;
 (define (domain blocksworld)
-  (:requirements :strips)
+
+(:requirements :strips)
+
 (:predicates (clear ?x)
              (on-table ?x)
              (arm-empty)

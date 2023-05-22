@@ -2,133 +2,91 @@
 import sys
 import random
 import argparse
+from typing import Dict
+import os
 
 
-def get_objects(num_blocks):
-    str_objects = ""
-    for i in range(1, num_blocks+1):
-        str_objects = str_objects + f" b{i}"
-    str_objects = str_objects + " - object"
-    return str_objects
+def get_block(b: int) -> str:
+    return f"b{b}"
 
 
-def get_state(num_blocks: int, is_goal: bool = False ) -> str:
-    str_state = "\n"
+def get_objects(blocks: int, **kwargs: dict) -> str:
+    return " ".join([get_block(i) for i in range(1, 1 + blocks)]) + " - object"
+
+
+def get_state(blocks: int, is_goal: bool = False, **kwargs: dict) -> str:
+    offset = "\n    "
+    str_state = ""
     if not is_goal:
-        str_state = str_state + "    (handempty)\n"
+        str_state += offset + "(arm-empty)"
 
-    vblocks = list(range(1, num_blocks+1))
+    vblocks = list(range(1, blocks + 1))
     random.shuffle(vblocks)
 
-    str_state = str_state + "    (clear b"+str(vblocks[0])+")\n"
+    str_state += offset + f"(clear {get_block(vblocks[0])})"
     for i in range(0, len(vblocks)-1):
         if random.randint(0, 9) == 0:  # 10% chance of building a new tower
-            str_state = str_state + f"    (ontable b{vblocks[i]})\n"
-            str_state = str_state + f"    (clear b{vblocks[i+1]})\n"
+            str_state += offset + f"(on-table {get_block(vblocks[i])})"
+            str_state += offset + f"(clear {get_block(vblocks[i+1])})"
         else:
-            str_state = str_state + f"    (on b{vblocks[i]} b{vblocks[i+1]})\n"
-    str_state = str_state + f"    (ontable b{vblocks[-1]})\n"
+            str_state += offset + f"(on {get_block(vblocks[i])} {get_block(vblocks[i+1])})"
+    str_state += offset + f"(on-table {get_block(vblocks[-1])})"
     return str_state
 
 
-def generate_problem(name, nblocks):
-    str_out = ""
-    str_out += "(define (problem "+name+")\n"
-    str_out += " (:domain blocksworld)\n"
-    str_out += " (:objects " + get_objects(nblocks)+")\n"
-    str_out += " (:init " + get_state(num_blocks=nblocks)+")\n"
-    str_out += " (:goal (and " + get_state(num_blocks=nblocks, is_goal=True)+")))\n"
-    return str_out
+def get_init(blocks: int, **kwargs: Dict) -> str:
+    return get_state(blocks=blocks)
 
 
-def generate_domain():
-    str_out = ""
-    str_out += "(define (domain blocksworld)\n"
-    str_out += " (:requirements :strips)\n"
-    str_out += " (:predicates (on ?x ?y) (ontable ?x) (clear ?x) (handempty) (holding ?x))\n"
-    str_out += "\n"
-    str_out += " (:action pick-up\n"
-    str_out += "    :parameters (?x)\n"
-    str_out += "    :precondition (and (clear ?x) (ontable ?x) (handempty))\n"
-    str_out += "    :effect\n"
-    str_out += "      (and (not (ontable ?x))\n"
-    str_out += "           (not (clear ?x))\n"
-    str_out += "           (not (handempty))\n"
-    str_out += "           (holding ?x)))\n"
-    str_out += "\n"
-    str_out += " (:action put-down\n"
-    str_out += "    :parameters (?x)\n"
-    str_out += "    :precondition (holding ?x)\n"
-    str_out += "    :effect\n"
-    str_out += "    	  (and (not (holding ?x))\n"
-    str_out += "            (clear ?x)\n"
-    str_out += "            (handempty)\n"
-    str_out += "            (ontable ?x)))\n"
-    str_out += "\n"
-    str_out += " (:action stack\n"
-    str_out += "    :parameters (?x ?y)\n"
-    str_out += "    :precondition (and (holding ?x) (clear ?y))\n"
-    str_out += "    :effect\n"
-    str_out += "    	  (and (not (holding ?x))\n"
-    str_out += "    	  	   (not (clear ?y))\n"
-    str_out += "    	  	   (clear ?x)\n"
-    str_out += "    	  	   (handempty)\n"
-    str_out += "    	  	   (on ?x ?y)))\n"
-    str_out += "\n"
-    str_out += " (:action unstack\n"
-    str_out += "    :parameters (?x ?y)\n"
-    str_out += "    :precondition (and (on ?x ?y) (clear ?x) (handempty))\n"
-    str_out += "    :effect\n"
-    str_out += "    	  (and (holding ?x)\n"
-    str_out += "            (clear ?y)\n"
-    str_out += "            (not (clear ?x))\n"
-    str_out += "            (not (handempty))\n"
-    str_out += "            (not (on ?x ?y))))\n"
-    str_out += ")"
-    return str_out
+def get_goal(blocks: int, **kwargs: Dict) -> str:
+    return " (and " + get_state(blocks=blocks, is_goal=True) + ")"
+
+
+def generate_problem(args: Dict):
+    str_config = ', '.join([f'{k}={v}' for k, v in args.items()])
+    str_objects = get_objects(**args)
+    str_init = get_init(**args)
+    str_goal = get_goal(**args)
+    with open(f"{args['out_folder']}/p{args['instance_id']:02}.pddl", "w") as f_problem:
+        f_problem.write(
+            f";; {str_config}\n\n"
+            f"(define (problem blocksworld-{args['instance_id']:02})\n"
+            f" (:domain blocksworld)\n"
+            f" (:objects {str_objects})\n"
+            f" (:init {str_init})\n"
+            f" (:goal {str_goal}))\n")
+
+
+def parse_args() -> Dict[str, int]:
+    # Parser descriptor
+    parser = argparse.ArgumentParser(description="Blocksworld generator")
+    parser.add_argument("-b", "--blocks", type=int, help="number of boxes (min 2)", required=True)
+    parser.add_argument("--seed", type=int, default=42, help="random seed (default: 42)")
+    parser.add_argument("-out", "--out_folder", type=str, default=".", help="output folder (default: \".\")")
+    parser.add_argument("-id", "--instance_id", type=int, default=0, help="instance id (default: 0)")
+
+    # Parse arguments
+    args = parser.parse_args()
+    blocks = args.blocks
+    out_f = args.out_folder
+    ins_id = args.instance_id
+
+    # Input sanity checks
+    if blocks < 2:
+        sys.exit(-1)
+
+    # Initialize data
+    random.seed(args.seed)  # set the random seed here
+    os.makedirs(name=out_f, exist_ok=True)  # create the output folder if that doesn't exist
+
+    return {'blocks': blocks, 'out_folder': out_f, 'instance_id': ins_id, 'seed': args.seed}
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Blocksworld generator")
-    parser.add_argument("-f", "--from_blocks", type=int, required=True)
-    parser.add_argument("-t", "--to_blocks", type=int, required=True)
-    parser.add_argument("-s", "--step", type=int, nargs='?', default=1, required=False)
-    parser.add_argument("-o", "--out_folder", type=str, required=True)
-    parser.add_argument("--seed", type=int, default=42)
-    args = parser.parse_args()
-
-    from_nth = args.from_blocks
-    to_nth = args.to_blocks
-    step = args.step
-    out_folder = args.out_folder
-    seed = args.seed
-
-    if step < 1 or to_nth < from_nth:
-        sys.exit(-2)
-
-    # GENERATION
-    vblocks = range(from_nth, to_nth+1)
-
-    # DOMAIN
-    str_domain = generate_domain()
-    with open(f"{out_folder}/domain.pddl", "w") as f_domain:
-        f_domain.write(str_domain)
-
-    # INSTANCES
-    random.seed(seed)
-
-    num_of_same_complexity_problems = 1
-    instance_id = 1
-    for i in range(from_nth, to_nth+1, step):
-        for j in range(num_of_same_complexity_problems):
-            # Problem name
-            with open(f"{out_folder}/p{instance_id:02}.pddl", "w") as f_problem:
-                problem_name = f"blocksworld-{instance_id:02}"
-                str_problem = generate_problem(problem_name, vblocks[i-from_nth])
-                f_problem.write(str_problem)
-            instance_id += 1
+    args_dict = parse_args()
+    generate_problem(args=args_dict)
 
 
 if __name__ == "__main__":
     main()
-    
+
