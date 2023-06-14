@@ -7,13 +7,13 @@ def get_next_config(starting_cars: int = 1,
                     starting_locations: int = 1,
                     max_locations: int = 1,
                     out_folder: str = ".",
-                    max_instance_id: int = 100,
                     starting_instance_id: int = 1,
+                    max_instance_id: int = 100,
                     seed: int = 42):
     instance_id, steps = starting_instance_id, 0
     num_instances = float(1+max_instance_id-instance_id)
-    step_cars = float(max_cars-starting_cars) / num_instances
-    step_locations = float(max_locations-starting_locations) / num_instances
+    step_cars = float(1+max_cars-starting_cars) / num_instances
+    step_locations = float(1+max_locations-starting_locations) / num_instances
     while instance_id <= max_instance_id:
         cars = int(starting_cars + step_cars * steps)
         locations = int(starting_locations + step_locations * steps)
@@ -48,7 +48,7 @@ def main():
                 seed=seeds[experiment]):
             ret_code = execute_command(command=command.split())
             logging.info(f"Executed command={command}; result={ret_code}")
-            
+
     # Copy base cases
     command = "cp base_cases/* training/easy/"
     ret_code = execute_command(command=command, shell=True)
