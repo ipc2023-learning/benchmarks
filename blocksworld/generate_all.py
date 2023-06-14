@@ -26,7 +26,7 @@ def main():
     starting_blocks = [5, 5, 35, 160]
     max_blocks = [30, 30, 150, 500]
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]
-    init_ids = [15, 1, 1, 1]
+    init_ids = [15, 1, 1, 1]  # 14 base cases
     max_ids = [99, 30, 30, 30]
     seeds = [42, 1007, 1007, 1007]
     for experiment in range(4):
