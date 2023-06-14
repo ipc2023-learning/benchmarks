@@ -1,3 +1,5 @@
+;; rows=4, columns=5, robots=1, out_folder=training/easy, instance_id=28
+
 (define (problem floortile-28)
  (:domain floortile)
  (:objects 
@@ -26,32 +28,23 @@
     tile_4_3
     tile_4_4
     tile_4_5 - tile
-    robot1
-    robot2
-    robot3
-    robot4
-    robot5 - robot
+    robot1 - robot
     white black - color
 )
  (:init 
-    (robot-at robot1 tile_1_4)
-    (robot-has robot1 white)
-    (robot-at robot2 tile_1_2)
-    (robot-has robot2 white)
-    (robot-at robot3 tile_4_3)
-    (robot-has robot3 white)
-    (robot-at robot4 tile_4_5)
-    (robot-has robot4 black)
-    (robot-at robot5 tile_0_1)
-    (robot-has robot5 white)
+    (robot-at robot1 tile_4_1)
+    (robot-has robot1 black)
     (available-color white)
     (available-color black)
+    (clear tile_0_1)
     (clear tile_0_2)
     (clear tile_0_3)
     (clear tile_0_4)
     (clear tile_0_5)
     (clear tile_1_1)
+    (clear tile_1_2)
     (clear tile_1_3)
+    (clear tile_1_4)
     (clear tile_1_5)
     (clear tile_2_1)
     (clear tile_2_2)
@@ -63,9 +56,10 @@
     (clear tile_3_3)
     (clear tile_3_4)
     (clear tile_3_5)
-    (clear tile_4_1)
     (clear tile_4_2)
+    (clear tile_4_3)
     (clear tile_4_4)
+    (clear tile_4_5)
     (up tile_1_1 tile_0_1 )
     (up tile_1_2 tile_0_2 )
     (up tile_1_3 tile_0_3 )
