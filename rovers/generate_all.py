@@ -20,7 +20,7 @@ def get_next_config(starting_rovers: int = 1,
     objectives = starting_objectives
     while instance_id <= max_instance_id:
         print(f"r={rovers}; w={waypoints}; c={cameras}; o={objectives}")
-        yield f"python rovers.py -r {rovers} -w {waypoints} -c {cameras} -o {objectives} " \
+        yield f"PYTHONHASHSEED=0 python rovers.py -r {rovers} -w {waypoints} -c {cameras} -o {objectives} " \
               f"-out {out_folder} -id {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
@@ -67,7 +67,7 @@ def main():
                 out_folder=output_folders[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
 

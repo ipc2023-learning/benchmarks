@@ -231,17 +231,19 @@ def parse_args() -> Dict[str, int]:
     os.makedirs(name=out_f, exist_ok=True)  # create the output folder if that doesn't exist
 
     return {'rovers': rovers, 'waypoints': waypoints, 'cameras': cameras, 'objectives': objectives,
-            'out_folder': out_f, 'instance_id': ins_id}
+            'out_folder': out_f, 'instance_id': ins_id, 'seed': args.seed}
 
 
 def generate_problem(args: Dict):
+    str_config = ', '.join([f'{k}={v}' for k, v in args.items()])
     str_objects = get_objects(**args)
     str_init, possible_goals = get_init(**args)
     args['rock_samples'] = possible_goals[0]
     args['soil_samples'] = possible_goals[1]
     str_goal = get_goal(**args)
     with open(f"{args['out_folder']}/p{args['instance_id']:02}.pddl", "w") as f_problem:
-        f_problem.write(f"(define (problem rover-{args['instance_id']:02})\n"
+        f_problem.write(f";; {str_config}\n\n"
+                        f"(define (problem rover-{args['instance_id']:02})\n"
                         f" (:domain rover)\n"
                         f" (:objects {str_objects})\n"
                         f" (:init {str_init})\n"
