@@ -50,7 +50,7 @@ def main():
                 starting_instance_id=init_ids[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
 
