@@ -20,7 +20,7 @@ def get_next_config(starting_satellites: int = 1,
     directions = starting_directions
     while instance_id <= max_instance_id:
         print(f"s={satellites}; i={instruments}; m={modes}; d={directions}")
-        yield f"python satellite.py -s {satellites} -i {instruments} -m {modes} -d {directions} " \
+        yield f"PYTHONHASHSEED=0 python satellite.py -s {satellites} -i {instruments} -m {modes} -d {directions} " \
               f"-o {out_folder} -id {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
@@ -68,7 +68,7 @@ def main():
                 out_folder=output_folders[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
 
