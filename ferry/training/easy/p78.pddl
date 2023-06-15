@@ -1,10 +1,10 @@
-;; cars=15, locations=12, out_folder=training/easy, instance_id=78
+;; cars=16, locations=13, out_folder=training/easy, instance_id=78, seed=108
 
 (define (problem ferry-78)
  (:domain ferry)
  (:objects 
-    car1 car2 car3 car4 car5 car6 car7 car8 car9 car10 car11 car12 car13 car14 car15 - car
-    loc1 loc2 loc3 loc4 loc5 loc6 loc7 loc8 loc9 loc10 loc11 loc12 - location
+    car1 car2 car3 car4 car5 car6 car7 car8 car9 car10 car11 car12 car13 car14 car15 car16 - car
+    loc1 loc2 loc3 loc4 loc5 loc6 loc7 loc8 loc9 loc10 loc11 loc12 loc13 - location
  )
  (:init 
     (empty-ferry)
@@ -24,19 +24,21 @@
     (at car13 loc4)
     (at car14 loc12)
     (at car15 loc6)
+    (at car16 loc4)
 )
- (:goal  (and (at car1 loc4)
-   (at car2 loc3)
-   (at car3 loc4)
-   (at car4 loc2)
-   (at car5 loc9)
-   (at car6 loc8)
-   (at car7 loc2)
-   (at car8 loc10)
-   (at car9 loc7)
-   (at car10 loc12)
-   (at car11 loc8)
-   (at car12 loc5)
-   (at car13 loc12)
+ (:goal  (and (at car1 loc2)
+   (at car2 loc5)
+   (at car3 loc2)
+   (at car4 loc10)
+   (at car5 loc7)
+   (at car6 loc2)
+   (at car7 loc10)
+   (at car8 loc7)
+   (at car9 loc12)
+   (at car10 loc8)
+   (at car11 loc5)
+   (at car12 loc12)
+   (at car13 loc13)
    (at car14 loc10)
-   (at car15 loc12))))
+   (at car15 loc12)
+   (at car16 loc1))))

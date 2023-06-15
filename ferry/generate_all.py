@@ -18,7 +18,7 @@ def get_next_config(starting_cars: int = 1,
         cars = int(starting_cars + step_cars * steps)
         locations = int(starting_locations + step_locations * steps)
         print(f"c={cars}; l={locations}")
-        yield f"python ferry.py -c {cars} -l {locations} -o {out_folder} -i {instance_id} --seed {seed}"
+        yield f"PYTHONHASHSEED=0 python ferry.py -c {cars} -l {locations} -o {out_folder} -i {instance_id} --seed {seed}"
         # Update input values for the next instance
         steps += 1
         instance_id += 1
@@ -46,7 +46,7 @@ def main():
                 starting_instance_id=init_ids[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
     # Copy base cases

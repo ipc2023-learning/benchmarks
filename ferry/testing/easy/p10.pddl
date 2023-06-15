@@ -1,4 +1,4 @@
-;; cars=7, locations=8, out_folder=testing/easy, instance_id=10
+;; cars=7, locations=8, out_folder=testing/easy, instance_id=10, seed=1016
 
 (define (problem ferry-10)
  (:domain ferry)
