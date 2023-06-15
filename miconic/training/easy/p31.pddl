@@ -1,23 +1,17 @@
+;; passengers=2, floors=7, out_folder=training/easy, instance_id=31, seed=58
+
 (define (problem miconic-31)
  (:domain miconic)
  (:objects 
-    p1 p2 p3 p4 p5 p6 - passenger
+    p1 p2 - passenger
     f1 f2 f3 f4 f5 f6 f7 - floor
     )
  (:init 
-    (lift-at f6)
-    (origin p1 f1)
-    (destin p1 f2)
+    (lift-at f5)
+    (origin p1 f2)
+    (destin p1 f3)
     (origin p2 f6)
-    (destin p2 f3)
-    (origin p3 f2)
-    (destin p3 f3)
-    (origin p4 f2)
-    (destin p4 f7)
-    (origin p5 f1)
-    (destin p5 f7)
-    (origin p6 f6)
-    (destin p6 f5)
+    (destin p2 f7)
     (above f1 f2)
     (above f1 f3)
     (above f1 f4)
@@ -41,8 +35,4 @@
     (above f6 f7)
 )
  (:goal  (and (served p1)
-   (served p2)
-   (served p3)
-   (served p4)
-   (served p5)
-   (served p6))))
+   (served p2))))
