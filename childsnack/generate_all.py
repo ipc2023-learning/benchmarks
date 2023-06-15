@@ -17,7 +17,7 @@ def get_next_config(starting_children: int = 1,
         1, starting_children, starting_allergic, starting_trays, starting_sandwiches
     while instance_id <= max_instance_id:
         print(f"c={children}; a={allergic}; t={trays}; s={sandwiches}")
-        yield f"python childsnack.py -c {children} -a {allergic} -t {trays} -s {sandwiches} -o {out_folder} -i {instance_id} --seed {seed}"
+        yield f"PYTHONHASHSEED=0 python childsnack.py -c {children} -a {allergic} -t {trays} -s {sandwiches} -o {out_folder} -i {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
         if (sandwiches+step_sandwiches) <= children*2:
@@ -63,7 +63,7 @@ def main():
                 out_folder=output_folders[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
 

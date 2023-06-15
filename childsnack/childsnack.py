@@ -114,12 +114,14 @@ def parse_args() -> Dict[str, int]:
     os.makedirs(name=out_f, exist_ok=True)  # create the output folder if that doesn't exist
 
     return {'children': children, 'allergic_children': allergic, 'trays': trays, 'sandwiches': sandwiches,
-            'out_folder': out_f, 'instance_id': ins_id}
+            'out_folder': out_f, 'instance_id': ins_id, 'seed': args.seed}
 
 
 def generate_problem(args: Dict):
+    str_config = ', '.join([f'{k}={v}' for k, v in args.items()])
     with open(f"{args['out_folder']}/p{args['instance_id']:02}.pddl", "w") as f_problem:
-        f_problem.write(f"(define (problem childsnack-{args['instance_id']:02})\n"
+        f_problem.write(f";; {str_config}\n\n"
+                        f"(define (problem childsnack-{args['instance_id']:02})\n"
                         f" (:domain childsnack)\n"
                         f" (:objects {get_objects(**args)})\n"
                         f" (:init {get_init(**args)})\n"
