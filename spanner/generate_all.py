@@ -38,7 +38,7 @@ def main():
     max_locations = [10, 10, 45, 100]
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]
     max_ids = [99, 30, 30, 30]
-    init_ids = [1, 1, 1, 1]  # X base cases
+    init_ids = [15, 1, 1, 1]  # 14 base cases
     seeds = [42, 1007, 1007, 1007]
     for experiment in range(4):
         for command in get_next_config(

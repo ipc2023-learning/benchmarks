@@ -1,10 +1,10 @@
-;; spanners=2, nuts=1, locations=4, out_folder=training/easy, instance_id=15, seed=56
+;; spanners=1, nuts=1, locations=4, out_folder=training/easy, instance_id=15, seed=42
 
 (define (problem spanner-15)
  (:domain spanner)
  (:objects 
     bob - man
-    spanner1 spanner2 - spanner
+    spanner1 - spanner
     nut1 - nut
     shed location1 location2 location3 location4 gate - location
  )
@@ -12,8 +12,6 @@
     (at bob shed)
     (at spanner1 location1)
     (usable spanner1)
-    (at spanner2 location4)
-    (usable spanner2)
     (at nut1 gate)
     (loose nut1)
     (link shed location1)

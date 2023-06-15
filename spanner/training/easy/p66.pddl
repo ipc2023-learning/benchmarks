@@ -1,4 +1,4 @@
-;; spanners=7, nuts=4, locations=8, out_folder=training/easy, instance_id=66, seed=107
+;; spanners=7, nuts=4, locations=8, out_folder=training/easy, instance_id=66, seed=93
 
 (define (problem spanner-66)
  (:domain spanner)
@@ -10,19 +10,19 @@
  )
  (:init 
     (at bob shed)
-    (at spanner1 location4)
+    (at spanner1 location8)
     (usable spanner1)
-    (at spanner2 location7)
+    (at spanner2 location6)
     (usable spanner2)
-    (at spanner3 location8)
+    (at spanner3 location2)
     (usable spanner3)
-    (at spanner4 location5)
+    (at spanner4 location2)
     (usable spanner4)
-    (at spanner5 location3)
+    (at spanner5 location6)
     (usable spanner5)
-    (at spanner6 location7)
+    (at spanner6 location3)
     (usable spanner6)
-    (at spanner7 location2)
+    (at spanner7 location3)
     (usable spanner7)
     (at nut1 gate)
     (loose nut1)
