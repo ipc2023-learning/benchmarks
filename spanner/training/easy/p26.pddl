@@ -1,10 +1,12 @@
+;; spanners=3, nuts=2, locations=5, out_folder=training/easy, instance_id=26, seed=67
+
 (define (problem spanner-26)
  (:domain spanner)
  (:objects 
     bob - man
-    spanner1 spanner2 spanner3 spanner4 spanner5 spanner6 spanner7 spanner8 spanner9 spanner10 spanner11 - spanner
-    nut1 - nut
-    shed location1 gate - location
+    spanner1 spanner2 spanner3 - spanner
+    nut1 nut2 - nut
+    shed location1 location2 location3 location4 location5 gate - location
  )
  (:init 
     (at bob shed)
@@ -12,27 +14,18 @@
     (usable spanner1)
     (at spanner2 location1)
     (usable spanner2)
-    (at spanner3 location1)
+    (at spanner3 location4)
     (usable spanner3)
-    (at spanner4 location1)
-    (usable spanner4)
-    (at spanner5 location1)
-    (usable spanner5)
-    (at spanner6 location1)
-    (usable spanner6)
-    (at spanner7 location1)
-    (usable spanner7)
-    (at spanner8 location1)
-    (usable spanner8)
-    (at spanner9 location1)
-    (usable spanner9)
-    (at spanner10 location1)
-    (usable spanner10)
-    (at spanner11 location1)
-    (usable spanner11)
     (at nut1 gate)
     (loose nut1)
+    (at nut2 gate)
+    (loose nut2)
     (link shed location1)
-    (link location1 gate)
-)
- (:goal  (and (tightened nut1))))
+    (link location5 gate)
+    (link location1 location2)
+     (link location2 location3)
+     (link location3 location4)
+     (link location4 location5)
+ )
+ (:goal  (and (tightened nut1)
+   (tightened nut2))))

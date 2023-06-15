@@ -1,3 +1,5 @@
+;; spanners=100, nuts=50, locations=50, out_folder=testing/hard, instance_id=1, seed=1007
+
 (define (problem spanner-01)
  (:domain spanner)
  (:objects 
