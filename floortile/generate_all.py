@@ -22,7 +22,7 @@ def get_next_config(starting_grid: int = 2,
         _, rows, columns = grids.get()
         robots = min(int(starting_robots + step_robots * steps), columns)  # constraint: robots <= columns
         print(f"r={rows}; c={columns}; p={robots}")
-        yield f"python floortile.py -r {rows} -c {columns} -p {robots} -o {out_folder} -id {instance_id} --seed {seed}"
+        yield f"PYTHONHASHSEED=0 python floortile.py -r {rows} -c {columns} -p {robots} -o {out_folder} -id {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
         seed += 1
@@ -57,7 +57,7 @@ def main():
                 starting_instance_id=init_ids[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
     # Copy base cases

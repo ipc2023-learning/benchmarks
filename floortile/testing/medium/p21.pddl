@@ -1,4 +1,4 @@
-;; rows=10, columns=22, robots=12, out_folder=testing/medium, instance_id=21
+;; rows=10, columns=22, robots=12, out_folder=testing/medium, instance_id=21, seed=1027
 
 (define (problem floortile-21)
  (:domain floortile)

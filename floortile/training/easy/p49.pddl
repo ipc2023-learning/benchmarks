@@ -1,4 +1,4 @@
-;; rows=6, columns=4, robots=2, out_folder=training/easy, instance_id=49
+;; rows=6, columns=4, robots=2, out_folder=training/easy, instance_id=49, seed=74
 
 (define (problem floortile-49)
  (:domain floortile)
