@@ -20,7 +20,7 @@ def get_next_config(starting_vehicles: int = 1,
     max_capacity = starting_max_capacity
     while instance_id <= max_instance_id:
         print(f"v={vehicles}; p={packages}; l={locations}; m={max_capacity}")
-        yield f"python transport.py -v {vehicles} -p {packages} -l {locations} -m {max_capacity} -o {out_folder} -i {instance_id} --seed {seed}"
+        yield f"PYTHONHASHSEED=0 python transport.py -v {vehicles} -p {packages} -l {locations} -m {max_capacity} -o {out_folder} -i {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
         if (locations+step_locations) <= packages*2:  # allow up to |locations| == 2|packages|
@@ -61,7 +61,7 @@ def main():
                 out_folder=output_folders[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
 

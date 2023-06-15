@@ -104,15 +104,17 @@ def parse_args() -> Dict[str, int]:
 
     return {'vehicles': vehicles, 'packages': packages,
             'locations': locations, 'max_capacity': max_capacity,
-            'out_folder': out_f, 'instance_id': ins_id}
+            'out_folder': out_f, 'instance_id': ins_id, 'seed': args.seed}
 
 
 def generate_problem(args: Dict):
+    str_config = ', '.join([f'{k}={v}' for k, v in args.items()])
     with open(f"{args['out_folder']}/p{args['instance_id']:02}.pddl", "w") as f_problem:
         str_objects = get_objects(**args)
         str_init, args['origins'] = get_init(**args)
         str_goal = get_goal(**args)
-        f_problem.write(f"(define (problem transport-{args['instance_id']:02})\n"
+        f_problem.write(f";; {str_config}\n\n"
+                        f"(define (problem transport-{args['instance_id']:02})\n"
                         f" (:domain transport)\n"
                         f" (:objects {str_objects})\n"
                         f" (:init {str_init})\n"
