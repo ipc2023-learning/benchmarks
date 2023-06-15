@@ -12,7 +12,7 @@ def get_next_config(starting_grid_size: int = 4,
     instance_id, grid_size, boxes = 1, starting_grid_size, starting_boxes
     while instance_id <= max_instance_id:
         print(f"g={grid_size}; b={boxes}; seed={seed}")
-        yield f"python sokoban.py -g {grid_size} -b {boxes} -out {out_folder} -id {instance_id} --seed {seed}"
+        yield f"PYTHONHASHSEED=0 python sokoban.py -g {grid_size} -b {boxes} -out {out_folder} -id {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
         seed += 1
@@ -42,7 +42,7 @@ def main():
                 out_folder=output_folders[experiment],
                 max_instance_id=max_ids[experiment],
                 seed=seeds[experiment]):
-            ret_code = execute_command(command=command.split())
+            ret_code = execute_command(command=command, shell=True)
             logging.info(f"Executed command={command}; result={ret_code}")
 
 
