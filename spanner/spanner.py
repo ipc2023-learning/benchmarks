@@ -87,7 +87,7 @@ def parse_args() -> Dict[str, int]:
     random.seed(args.seed)  # set the random seed here
     os.makedirs(name=out_f, exist_ok=True)  # create the output folder if that doesn't exist
 
-    return {'spanners': spanners, 'nuts': nuts, 'locations': locations, 'out_folder': out_f, 'instance_id': ins_id}
+    return {'spanners': spanners, 'nuts': nuts, 'locations': locations, 'out_folder': out_f, 'instance_id': ins_id, 'seed': args.seed}
 
 
 def generate_problem(args: Dict):

@@ -15,7 +15,7 @@ def get_next_config(starting_passengers: int = 1,
     passengers, floors = starting_passengers, starting_floors
     while instance_id <= max_instance_id:
         # print(f"p={passengers}; f={floors}")
-        yield f"python miconic.py -p {passengers} -f {floors} -o {out_folder} -i {instance_id} --seed {seed}"
+        yield f"PYTHONHASHSEED=0 python miconic.py -p {passengers} -f {floors} -o {out_folder} -i {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
         seed += 1

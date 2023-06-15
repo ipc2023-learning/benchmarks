@@ -17,7 +17,7 @@ def get_next_config(starting_spanners: int = 1,
     spanners, nuts, locations = starting_spanners, starting_nuts, starting_locations
     while instance_id <= max_instance_id:
         # print(f"s={spanners}; n={nuts}; l={locations}")
-        yield f"python spanner.py -s {spanners} -n {nuts} -l {locations} -o {out_folder} -i {instance_id} --seed {seed}"
+        yield f"PYTHONHASHSEED=0 python spanner.py -s {spanners} -n {nuts} -l {locations} -o {out_folder} -i {instance_id} --seed {seed}"
         # Update input values for the next instance
         instance_id += 1
         seed += 1
