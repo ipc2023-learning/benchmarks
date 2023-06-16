@@ -32,23 +32,6 @@ def get_next_config(starting_children: int = 1,
         instance_id += 1
         steps += 1
         seed += 1
-        """
-        if (sandwiches+step_sandwiches) <= children*2:
-            sandwiches += step_sandwiches
-        elif (trays+step_trays) <= min(children, 4):  # max_number_of_trays = 4
-            trays += step_trays
-            sandwiches = max(children, starting_sandwiches)
-        elif (allergic + step_allergic) <= children:
-            allergic += step_allergic
-            sandwiches = max(children, starting_sandwiches)
-            trays = starting_trays
-        else:
-            children += step_children
-            sandwiches = max(children, starting_sandwiches)
-            trays = starting_trays
-            allergic = starting_allergic
-        """
-    # raise StopIteration()
 
 
 def main():
