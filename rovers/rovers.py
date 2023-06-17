@@ -223,7 +223,7 @@ def parse_args() -> Dict[str, int]:
         logging.error(f" At least 1 camera required (input: cameras={cameras})\n")
         sys.exit(-3)
     if objectives < 1:
-        logging.error(f" At least 1 objective requiredinput: objectives={objectives})\n")
+        logging.error(f" At least 1 objective required (input: objectives={objectives})\n")
         sys.exit(-4)
 
     # Initialize data

@@ -1,3 +1,5 @@
+;; rovers=1, waypoints=4, cameras=1, objectives=1, out_folder=testing/easy, instance_id=1, seed=1007
+
 (define (problem rover-01)
  (:domain rover)
  (:objects 
@@ -6,8 +8,8 @@
     rover1 - rover
     rover1store - store
     waypoint1 waypoint2 waypoint3 waypoint4 - waypoint
-    camera1 camera2 - camera
-    objective1 objective2 - objective)
+    camera1 - camera
+    objective1 - objective)
  (:init 
     (at_lander general waypoint1)
     (at rover1 waypoint2)
@@ -41,21 +43,17 @@
     (can_traverse rover1 waypoint4 waypoint1)
     (can_traverse rover1 waypoint2 waypoint4)
     (can_traverse rover1 waypoint4 waypoint2)
-    (calibration_target camera1 objective2)
+    (calibration_target camera1 objective1)
     (on_board camera1 rover1)
     (supports camera1 high_res)
-    (calibration_target camera2 objective2)
-    (on_board camera2 rover1)
-    (supports camera2 colour)
-    (supports camera2 low_res)
-    (visible_from objective1 waypoint3)
+    (supports camera1 colour)
+    (supports camera1 low_res)
     (visible_from objective1 waypoint1)
+    (visible_from objective1 waypoint3)
     (visible_from objective1 waypoint2)
-    (visible_from objective1 waypoint4)
-    (visible_from objective2 waypoint4)
-    (visible_from objective2 waypoint3))
+    (visible_from objective1 waypoint4))
  (:goal  (and 
-    
-    (communicated_soil_data waypoint3)
-    (communicated_image_data objective2 high_res)
-    (communicated_image_data objective1 low_res))))
+    (communicated_rock_data waypoint3)
+    (communicated_rock_data waypoint2)
+    (communicated_soil_data waypoint2)
+    )))
