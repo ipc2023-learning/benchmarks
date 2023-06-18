@@ -61,7 +61,7 @@ def main():
     max_cameras = [4, 4, 50, 100]
     starting_objectives = [1, 1, 15, 100]
     max_objectives = [10, 10, 80, 200]
-    init_ids = [1, 1, 1, 1]  # X base cases
+    init_ids = [7, 1, 1, 1]  # 6 base cases
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]
     max_ids = [99, 30, 30, 30]
     seeds = [42, 1007, 1007, 1007]
