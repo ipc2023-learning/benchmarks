@@ -24,7 +24,7 @@ def apply_plan(pddl_problem, plan) -> bool:
 
 def get_row_col(tile_name: str) -> Tuple[int, int]:
     _, r, c = tile_name.split('_')
-    return tuple((r, c))
+    return tuple((int(r), int(c)))
 
 def generalize_plan(pddl_problem) -> SequentialPlan:
     plan = list()
