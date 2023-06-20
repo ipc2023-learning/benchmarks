@@ -16,6 +16,7 @@
     (robot-at robot1 tile_2_2)
     (robot-at robot2 tile_2_1)
     (robot-has robot1 black)
+    (robot-has robot2 black)
     (available-color white)
     (available-color black)
     (clear tile_0_1)
