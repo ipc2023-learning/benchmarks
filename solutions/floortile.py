@@ -36,7 +36,7 @@ def generalize_plan(pddl_problem) -> SequentialPlan:
     tile_objs = set([str(o) for o in pddl_problem.objects(utypes[1])])
     white_obj = pddl_problem.object("white")
     black_obj = pddl_problem.object("black")
-    max_rows, max_cols = get_row_col(max(tile_objs))  # get rows and cols
+    max_rows, max_cols = max([get_row_col(t) for t in tile_objs])  # get rows and cols
 
     with SequentialSimulator(problem=pddl_problem) as simulator:
         state = simulator.get_initial_state()
@@ -54,6 +54,7 @@ def generalize_plan(pddl_problem) -> SequentialPlan:
                 tile_robots.append((c, k.args[0]))
 
         sorted_robots = [r for _, r in sorted(tile_robots)]
+        # print(sorted_robots)
         # 1. move all robots to the upmost tile in their current column
         prev_col = 0
         for r in sorted_robots:
@@ -147,6 +148,7 @@ def generalize_plan(pddl_problem) -> SequentialPlan:
         tile = robots_at[robot]
         row, col = get_row_col(str(tile))
         while col < max_cols:
+            # print(col, max_cols)
             # 4.a move to the right once
             next_tile = pddl_problem.object(f"tile_{row}_{col+1}")
             move_right = ActionInstance(actions[5], tuple([robot, tile, next_tile]))
@@ -194,7 +196,7 @@ def generalize_plan(pddl_problem) -> SequentialPlan:
 def main():
     reader = PDDLReader()
     """
-    pddl_problem = reader.parse_problem('../floortile/domain.pddl', '../floortile/training/easy/p08.pddl')
+    pddl_problem = reader.parse_problem('../floortile/domain.pddl', '../floortile/training/easy/p88.pddl')
     plan = generalize_plan(pddl_problem)
     print(plan)
     print(f"Is valid? {apply_plan(pddl_problem, plan)}")
