@@ -38,10 +38,10 @@ def get_next_config(starting_grid: int = 2,
 
 def main():
     # Easy instances are still quite hard to solve, even for LAMA
-    starting_grid = [3, 3, 10, 50]
-    step_grid = [1, 1, 3, 10]
-    starting_robots = [1, 1, 4, 20]
-    max_robots = [3, 3, 15, 100]
+    starting_grid = [3, 3, 10, 25]
+    step_grid = [1, 1, 3, 3]
+    starting_robots = [1, 1, 4, 15]
+    max_robots = [3, 3, 15, 35]
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]
     max_ids = [99, 30, 30, 30]
     init_ids = [17, 1, 1, 1]  # 16 base cases
