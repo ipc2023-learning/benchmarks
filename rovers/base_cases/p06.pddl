@@ -4,7 +4,7 @@
  (:domain rover)
  (:objects
     general - lander
-    colour high_res low_res - mode <zc
+    colour high_res low_res - mode
     rover1 rover2 - rover
     rover1store rover2store - store
     waypoint1 waypoint2 waypoint3 - waypoint
