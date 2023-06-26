@@ -26,8 +26,8 @@ def get_next_config(starting_grid_size: int = 4,
 
 
 def main():
-    starting_grid_size = [4, 4, 10, 35]
-    max_grid_size = [9, 9, 30, 70]
+    starting_grid_size = [8, 8, 20, 50]
+    max_grid_size = [15, 15, 40, 80]
     starting_boxes = [1, 1, 15, 25]
     max_boxes = [10, 10, 20, 50]
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]

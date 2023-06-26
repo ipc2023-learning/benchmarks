@@ -6,11 +6,12 @@ import random
 import sys
 import logging
 from typing import Dict, List, Tuple
+from queue import Queue
 
 
 def get_directions() -> List[str]:
-    """ 0: down; 1: up; 2: left; 3: right """
-    return ["down", "up", "left", "right"]
+    """ 0: down; 1: left; 2: up; 3: right """
+    return ["down", "left", "up", "right"]
 
 
 def get_location(row: int, column: int) -> str:
@@ -51,7 +52,13 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
     starting_robot_at = all_locations[0]
     grid[starting_robot_at[0]][starting_robot_at[1]] = 1  # mark it as visited
 
-    init_locations = {}  # list of boxes initial locations
+    # Serialize box ids, and initialize the init and goal locations
+    serialize_box_ids = [b for b in range(1, 1+boxes)]  # for inits and goals
+    random.shuffle(serialize_box_ids)
+    init_locations = {}  # dict of initial location -> box id
+    init_box_loc = [None for _ in range(1+boxes)]
+    goal_locations = {}  # dict of goal location -> box id
+    goal_box_loc = [None for _ in range(1+boxes)]
 
     def is_valid_agent_move(next_x: int, next_y: int) -> bool:
         return (0 < next_x < grid_size-1) and (0 < next_y < grid_size-1) and (grid[next_x][next_y] < 2)
@@ -60,7 +67,6 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
         return (1 < next_x < grid_size-2) and (1 < next_y < grid_size-2) and (grid[next_x][next_y] < 2)
 
     def print_grid():
-        #print(init_locations)
         car = ".+G#"
         for i in range(grid_size):
             row = ""
@@ -74,12 +80,38 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
                 row += car[grid[i][j]]
             print(row)
 
+    dx, dy = [-1, 0, 1, 0], [0, -1, 0, 1]  # 0: down, 1: left, 2: up, 3: right
     def get_path(from_loc, to_loc):
-        # ToDo: compute the path through valid_agent_moves in grid
-        ...
+        if from_loc == to_loc:
+            return []
+
+        visited_from = [[None for _ in range(grid_size)] for _ in range(grid_size)]
+        queue = Queue()
+        queue.put(from_loc)
+        visited_from[from_loc[0]][from_loc[1]] = from_loc
+
+        while queue and (visited_from[to_loc[0]][to_loc[1]] is None):
+            loc = queue.get()
+            for m in range(4):
+                n_loc_x, n_loc_y = loc[0] + dx[m], loc[1] + dy[m]
+                if is_valid_agent_move(n_loc_x, n_loc_y) and (visited_from[n_loc_x][n_loc_y] is None):
+                    visited_from[n_loc_x][n_loc_y] = loc
+                    queue.put((n_loc_x, n_loc_y))
+
+        if visited_from[to_loc[0]][to_loc[1]] is None:
+            return None
+
+        path = []
+        loc = to_loc
+        while visited_from[loc[0]][loc[1]] != loc:
+            path.append(loc)
+            loc = visited_from[loc[0]][loc[1]]
+
+        return path
+
 
     # Update box paths
-    dx, dy = [-1, 0, 1, 0], [0, -1, 0, 1]  # 0: down, 1: left, 2: up, 3: right
+    robot_at = starting_robot_at
     for box in range(boxes):
         # list of all available locations (not consider borders or close to them)
         all_locations = [(r, c) for r in range(2, grid_size-2) for c in range(2, grid_size-2) if grid[r][c] == 0]
@@ -87,201 +119,140 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
         random.shuffle(all_locations)
         box_at = all_locations[0]
         x, y = box_at
-        init_locations[box_at] = box
+        box_id = serialize_box_ids[box]
+        init_locations[box_at] = box_id  # location -> box id
+        init_box_loc[box_id] = box_at  # box id -> location
         grid[x][y] = 1
 
-        # Move box randomly up to 4 times or until reaching a stop condition (crossing a goal...)
-        # ToDo: compute the each Agent path if the move is valid
+        # Move box randomly up to max_moves times or until reaching a stop condition (crossing a goal...)
         max_moves = 4
         choices = []
-        if is_valid_agent_move(x-1, y):  # can be pushed down
-            choices.append(0)
-        if is_valid_agent_move(x, y+1):  # can be pushed left
-            choices.append(1)
-        if is_valid_agent_move(x+1, y):  # can be pushed up
-            choices.append(2)
-        if is_valid_agent_move(x, y-1):  # can be pushed right
-            choices.append(3)
+        robot_possible_dest = []
+        for m in range(4):
+            robot_possible_dest.append((x+dx[m], y+dy[m]))
+            if is_valid_agent_move(x+dx[m], y+dy[m]):
+                choices.append(m)
 
         assert choices
 
-        # ToDo: mark all cells in the selected Agent path as visited, i.e. grid[path_x][path_y] = 1
-        # ToDo: update the Agent location next to the box
-
         dir = random.choice(choices)
+
+        robot_to = robot_possible_dest[dir]
+        path = get_path(robot_at, robot_to)
+        assert not (path is None)
+        for loc in path:
+            grid[loc[0]][loc[1]] = 1
+        robot_at = robot_to
 
         for _ in range(max_moves):
             next_x, next_y = box_at[0] + dx[dir], box_at[1] + dy[dir]
-            print(box_at)
-            print(next_x, next_y, dir)
 
             valid_moves = []
             while is_valid_box_move(next_x, next_y):
                 valid_moves.append((next_x, next_y))
                 next_x += dx[dir]
                 next_y += dy[dir]
-                print(next_x, next_y, dir)
 
             if valid_moves:
                 idx = random.randint(0,  len(valid_moves)-1)
                 for i in range(idx+1):
                     grid[valid_moves[i][0]][valid_moves[i][1]] = 1  # mark cell as visited
+                if idx > 0:
+                    robot_at = valid_moves[idx-1]
+                else:
+                    robot_at = box_at
                 box_at = valid_moves[idx]  # set the new box location
 
-            # Change dir 90º
+            # Change dir 90º, and move the agent around the box
             choices = []
             x, y = box_at
             if dir == 0:  # down
                 if is_valid_agent_move(x, y+1) and is_valid_agent_move(x+1, y+1):  # left is OK
-                    choices.append(1)
+                    choices.append((1, (x, y+1), (x+1, y+1)))
                 if is_valid_agent_move(x, y-1) and is_valid_agent_move(x+1, y-1):  # right is OK
-                    choices.append(3)
+                    choices.append((3, (x, y-1), (x+1, y-1)))
             elif dir == 1:  # left
                 if is_valid_agent_move(x-1, y) and is_valid_agent_move(x-1, y-1):  # down is OK
-                    choices.append(0)
+                    choices.append((0, (x-1, y), (x-1, y-1)))
                 if is_valid_agent_move(x+1, y) and is_valid_agent_move(x+1, y-1):  # up is OK
-                    choices.append(2)
+                    choices.append((2, (x+1, y), (x+1, y-1)))
             elif dir == 2:  # up
                 if is_valid_agent_move(x, y+1) and is_valid_agent_move(x-1, y+1):  # left is OK
-                    choices.append(1)
+                    choices.append((1, (x, y+1), (x-1, y+1)))
                 if is_valid_agent_move(x, y-1) and is_valid_agent_move(x-1, y-1):  # right is OK
-                    choices.append(3)
+                    choices.append((3, (x, y-1), (x-1, y-1)))
             elif dir == 3:  # right
                 if is_valid_agent_move(x-1, y) and is_valid_agent_move(x-1, y+1):  # down is OK
-                    choices.append(0)
+                    choices.append((0, (x-1, y), (x-1, y+1)))
                 if is_valid_agent_move(x+1, y) and is_valid_agent_move(x+1, y+1):  # up is OK
-                    choices.append(2)
+                    choices.append((2, (x+1, y), (x+1, y+1)))
 
-            assert choices
-
-            dir = random.choice(choices)
+            # assert choices
+            if choices:
+                dir, loc1, loc2 = random.choice(choices)
+                grid[loc1[0]][loc1[1]] = 1
+                grid[loc2[0]][loc2[1]] = 1
+                robot_at = loc2
+            else:
+                break
 
         grid[box_at[0]][box_at[1]] = 2
+        goal_locations[box_at] = box_id
+        goal_box_loc[box_id] = box_at
 
-    print_grid()
-    """
-    # Get random initial robot_at and boxes locations
-    all_locations = [(row, col) for row in range(2, grid_size) for col in range(2, grid_size)]  # all borders are walls
+    #print(grid)
+    all_locations = [(r, c) for r in range(1, grid_size-1) for c in range(1, grid_size-1) if grid[r][c] == 0]
+    assert all_locations
     random.shuffle(all_locations)
-    robot_at = all_locations[0]
-    init_locations = all_locations[1:(boxes+1)]
+    num_walls = max(1, random.randint(int(0.3*len(all_locations)), int(0.8*len(all_locations))))
+    for w in all_locations[0:num_walls]:
+        grid[w[0]][w[1]] = 3
 
-    # Mark all visited locations
-    visited_locations = [[False for _ in range(grid_size)] for _ in range(grid_size)]
-    visited_locations[robot_at[0]-1][robot_at[1]-1] = True
-    for loc in init_locations:
-        visited_locations[loc[0]-1][loc[1]-1] = True
+    walls = set([(r, c) for r in range(grid_size) for c in range(grid_size) if grid[r][c] == 3])
 
-    # Simulate the grid
-    grid = [[0 for _ in range(grid_size)] for _ in range(grid_size)]
-    grid[robot_at[0]-1][robot_at[1]-1] = -1
-    box = 1
-    for loc in init_locations:
-        grid[loc[0]-1][loc[1]-1] = box
-        box += 1
+    #print_grid()
 
-    # Move randomly the agent with stop condition of all boxes moved at least once
-    moved_boxes = [0 for _ in range(boxes+1)]
-    rx, ry = robot_at[0]-1, robot_at[1]-1
-    dx, dy = [-1, 1, 0, 0], [0, 0, -1, 1]  # 0: down, 1: up, 2: left, 3: right
-    max_moves = grid_size * 1000
-    while max_moves > 0 and sum([1 for v in moved_boxes[1:] if v > 0]) < boxes:
-        max_moves -= 1
-        next_dir = random.randint(0, 3)  # choose random dir
-        nx, ny, pushed_box = rx+dx[next_dir], ry+dy[next_dir], (0, -1, -1)
-        valid_moves = []
-        # Computing valid moves in that direction
-        while 0 <= nx < grid_size and 0 <= ny < grid_size:
-            nnx = nx + dx[next_dir]
-            nny = ny + dy[next_dir]
-            # 1. If the agent is pushing a box
-            if pushed_box[0] > 0:
-                # 1.a. If (nnx,nny) is out of bounds or occupied by another box,
-                # then there are no more valid moves in that direction
-                if nnx < 0 or nnx >= grid_size or nny < 0 or nny >= grid_size or grid[nnx][nny] > 0:
-                    break
-            # 2. If the agent starts pushing a box
-            elif grid[nx][ny] > 0:
-                pushed_box = (grid[nx][ny], nx, ny)
-                # 2.a. the move will be valid if (nnx,nny) is inside the grid and clear
-                if nnx < 0 or nnx >= grid_size or nny < 0 or nny >= grid_size or grid[nnx][nny] > 0:
-                    break
-            # 3. any other case, the agent is not pushing and moves to a clear location
-            # else:
-            # 4. add the new move
-            valid_moves.append((nx, ny, pushed_box))
-            nx, ny = nnx, nny
-
-        # If there are no valid moves in a given direction, choose a new one
-        if not valid_moves:
-            continue
-
-        # Select one randomly
-        nx, ny, pushed_box = random.choice(valid_moves)
-        # Update the grid, visited locations, and pushed box
-        if pushed_box[0] > 0:
-            nnx = nx + dx[next_dir]
-            nny = ny + dy[next_dir]
-            grid[pushed_box[1]][pushed_box[2]] = 0
-            grid[nnx][nny] = pushed_box[0]
-            visited_locations[nnx][nny] = True
-            moved_boxes[pushed_box[0]] += 1
-
-        grid[rx][ry], grid[nx][ny] = 0, -1
-        while rx != nx or ry != ny:
-            visited_locations[rx][ry] = True
-            rx += dx[next_dir]
-            ry += dy[next_dir]
-        visited_locations[nx][ny] = True
-    """
-
-    """
     # Starting robot location
-    str_init += offset + f"(at-robot {get_location(robot_at[0], robot_at[1])})"
+    str_init += offset + f"(at-robot {get_location(starting_robot_at[0]+1, starting_robot_at[1]+1)})"
 
-    # Walls will be all non-visited locations
-    wall_locations = set([(r+1, c+1) for r in range(grid_size) for c in range(grid_size) if not visited_locations[r][c]])
-    occupied_locs = wall_locations.copy()
 
     # Starting boxes locations
-    str_init += offset + offset.join([f"(at {get_box(b+1)} {get_location(loc[0], loc[1])})"
-                                      for b, loc in enumerate(init_locations)])
-    for loc in init_locations:
-        occupied_locs.add(loc)
+    str_init += offset + offset.join([f"(at {get_box(serialize_box_ids[idx-1])} {get_location(loc[0]+1, loc[1]+1)})"
+                                      for idx, loc in enumerate(init_box_loc) if idx > 0])
+
 
     # Clear locs are all non-occupied starting locs
+    occupied_locs = set(walls)
+    for loc in init_locations.keys():
+        occupied_locs.add(loc)
+    all_locations = [(r, c) for r in range(1, grid_size - 1) for c in range(1, grid_size - 1)]
     clear_locs = set(all_locations).difference(occupied_locs)
-    str_init += offset + offset.join([f"(clear {get_location(loc[0], loc[1])})" for loc in clear_locs])
+    str_init += offset + offset.join([f"(clear {get_location(loc[0]+1, loc[1]+1)})" for loc in clear_locs])
 
     # Build the grid adjacency between all non-wall locations
     dirs = get_directions()
-    for row in range(1, 1+grid_size):
-        for col in range(1, 1+grid_size):
-            if (row, col) in wall_locations:
+    for row in range(1, grid_size):
+        for col in range(1, grid_size):
+            if (row, col) in walls:
                 continue
-            from_loc = get_location(row, col)
-            if row > 1 and not ((row-1, col) in wall_locations):  # 0: down
-                str_init += offset + f"(adjacent {from_loc} {get_location(row-1, col)} {dirs[0]})"
-            if col > 1 and not ((row, col-1) in wall_locations):  # 2: left
-                str_init += offset + f"(adjacent {from_loc} {get_location(row, col-1)} {dirs[2]})"
-            if row + 1 <= grid_size and not ((row+1, col) in wall_locations):  # 1: up
+            from_loc = get_location(row+1, col+1)
+            if (row+1 < grid_size) and (not ((row+1, col) in walls)):  # 0: down
+                str_init += offset + f"(adjacent {from_loc} {get_location(row+2, col+1)} {dirs[0]})"
+            if (col > 1) and (not ((row, col-1) in walls)):  # 1: left
                 str_init += offset + f"(adjacent {from_loc} {get_location(row+1, col)} {dirs[1]})"
-            if col + 1 <= grid_size and not ((row, col+1) in wall_locations):  # 3: right
-                str_init += offset + f"(adjacent {from_loc} {get_location(row, col+1)} {dirs[3]})"
-    """
+            if (row > 1) and (not ((row-1, col) in walls)):  # 2: up
+                str_init += offset + f"(adjacent {from_loc} {get_location(row, col+1)} {dirs[2]})"
+            if (col+1 < grid_size) and (not ((row, col+1) in walls)):  # 3: right
+                str_init += offset + f"(adjacent {from_loc} {get_location(row+1, col+2)} {dirs[3]})"
 
-    return str_init, grid
+    return str_init, goal_box_loc
 
 
-def get_goal(grid_size: int, grid: List[List[int]], **kwargs: dict) -> str:
+def get_goal(grid_size: int, goal_box_loc:  List, **kwargs: dict) -> str:
     offset = "\n    "
     str_goal = " (and "
-    """
-    for r in range(grid_size):
-        for c in range(grid_size):
-            if grid[r][c] > 0:
-                str_goal += offset + f"(at {get_box(grid[r][c])} {get_location(r+1, c+1)})"
-    """
+    for idx in range(1, len(goal_box_loc)):  # skip box id 0 which is always None
+        str_goal += offset + f"(at {get_box(idx)} {get_location(goal_box_loc[idx][0]+1, goal_box_loc[idx][1]+1)})"
     return str_goal + ")"
 
 
@@ -319,8 +290,8 @@ def parse_args() -> Dict[str, int]:
 def generate_problem(args: Dict):
     str_config = ', '.join([f'{k}={v}' for k, v in args.items()])
     str_objects = get_objects(**args)
-    str_init, grid = get_init(**args)
-    args['grid'] = grid
+    str_init, goal_box_loc = get_init(**args)
+    args['goal_box_loc'] = goal_box_loc
     str_goal = get_goal(**args)
     with open(f"{args['out_folder']}/p{args['instance_id']:02}.pddl", "w") as f_problem:
         f_problem.write(
