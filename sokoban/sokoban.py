@@ -49,6 +49,7 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
     assert all_locations  # there must be an available starting box location
     random.shuffle(all_locations)
     starting_robot_at = all_locations[0]
+    grid[starting_robot_at[0]][starting_robot_at[1]] = 1  # mark it as visited
 
     init_locations = {}  # list of boxes initial locations
 
@@ -73,6 +74,10 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
                 row += car[grid[i][j]]
             print(row)
 
+    def get_path(from_loc, to_loc):
+        # ToDo: compute the path through valid_agent_moves in grid
+        ...
+
     # Update box paths
     dx, dy = [-1, 0, 1, 0], [0, -1, 0, 1]  # 0: down, 1: left, 2: up, 3: right
     for box in range(boxes):
@@ -86,6 +91,7 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
         grid[x][y] = 1
 
         # Move box randomly up to 4 times or until reaching a stop condition (crossing a goal...)
+        # ToDo: compute the each Agent path if the move is valid
         max_moves = 4
         choices = []
         if is_valid_agent_move(x-1, y):  # can be pushed down
@@ -98,6 +104,9 @@ def get_init(grid_size: int, boxes: int, **kwargs: dict) -> Tuple[str, List[List
             choices.append(3)
 
         assert choices
+
+        # ToDo: mark all cells in the selected Agent path as visited, i.e. grid[path_x][path_y] = 1
+        # ToDo: update the Agent location next to the box
 
         dir = random.choice(choices)
 
