@@ -26,13 +26,13 @@ def get_next_config(starting_grid_size: int = 4,
 
 
 def main():
-    starting_grid_size = [8, 8, 20, 50]
-    max_grid_size = [15, 15, 40, 80]
-    starting_boxes = [1, 1, 15, 25]
-    max_boxes = [10, 10, 20, 50]
+    starting_grid_size = [8, 8, 20, 60]
+    max_grid_size = [13, 13, 50, 100]
+    starting_boxes = [1, 1, 5, 40]
+    max_boxes = [4, 4, 35, 80]
     output_folders = ["training/easy", "testing/easy", "testing/medium", "testing/hard"]
     max_ids = [99, 30, 30, 30]
-    init_ids = [1, 1, 1, 1]  # X base cases
+    init_ids = [13, 1, 1, 1]  # 12 base cases
     seeds = [42, 1007, 1007, 1007]
     for experiment in range(4):
         # print(output_folders[experiment])
