@@ -5,5 +5,4 @@ __pycache__/
 venv/
 *.sas
 *.stdout
-*.plan
 IPC23_Learning_Track.egg-info/
