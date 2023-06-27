@@ -10,6 +10,7 @@ from benchmarking_utils import execute_command
 def parallel_execution(domain: str, instance_names: list[str], mode: str):
     print(f"Parallelizing {len(instance_names)} tasks with {mp.cpu_count()} processors")
     pool = mp.Pool(mp.cpu_count())
+    #pool = mp.Pool(4)
     pbar = tqdm(total=len(instance_names), bar_format='{percentage:3.0f}%|{bar:10}{r_bar}')
 
     def collect_result(result):
