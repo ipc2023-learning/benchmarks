@@ -5,7 +5,8 @@ import json
 def main():
     # Run the universal-planning-validator (UPV) on all domains / instances and plans
     upv_dir = "../../../planning-validators/universal-planning-validator/validator/validate.bin"
-    domains = ["childsnack", "miconic", "satellite", "sokoban", "spanner", "transport"]
+    domains = ["blocksworld", "childsnack", "ferry", "floortile", "miconic",
+               "rovers", "satellite", "sokoban", "spanner", "transport"]
     subfolders = ["testing/easy", "testing/medium", "testing/hard"]
     problems = [f"p{p:02}" for p in range(1, 31)]
 
