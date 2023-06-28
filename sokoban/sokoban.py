@@ -348,7 +348,9 @@ def generate_problem(args: Dict):
             f" (:init {str_init})\n"
             f" (:goal {str_goal}))\n")
 
-    with open(f"plans/{args['out_folder']}/p{args['instance_id']:02}.plan", "w") as f_plan:
+    plan_dir = f"../solutions/sokoban/{args['out_folder']}"
+    os.makedirs(plan_dir, exist_ok=True)
+    with open(f"{plan_dir}/p{args['instance_id']:02}.plan", "w") as f_plan:
         f_plan.write(
             '\n'.join(plan) + f'\n; cost = {len(plan)} (unit cost)'
         )

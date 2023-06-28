@@ -1,7 +1,7 @@
 ; Source: https://github.com/AI-Planning/pddl-generators/tree/main/miconic
 ; Fix: prevent the elevator from boarding served passengers => (not (origin ?p ?f)) effect added to board action
 (define (domain miconic)
-  (:requirements :strips)
+  (:requirements :strips :typing)
   (:types passenger - object
           floor - object
          )

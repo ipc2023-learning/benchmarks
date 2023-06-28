@@ -3,6 +3,8 @@ import subprocess
 from typing import List, Union, Tuple
 import os
 import random
+import multiprocessing as mp
+from tqdm import tqdm
 
 
 def execute_command(command: List[str], **kwargs) -> int:
@@ -77,3 +79,23 @@ def random_connected_graph(nodes: int) -> Tuple[list, set]:
         graph.append((remaining_edges[i][1], remaining_edges[i][0]))
 
     return graph, tree
+
+
+def parallel_execution(func, domain: str, instance_names: list[str], plan_files: list[str]):
+    processors = 4  # mp.cpu_count()
+    print(f"Parallelizing {len(instance_names)} tasks with {processors} processors")
+    pool = mp.Pool(processors)
+    pbar = tqdm(total=len(instance_names), bar_format='{percentage:3.0f}%|{bar:10}{r_bar}')
+
+    def collect_result(result):
+        pbar.update()
+
+    def print_error(result):
+        print(f"\rError callback: {result}\n")
+
+    for task, plan_file in zip(instance_names, plan_files):
+        pool.apply_async(func=func, args=(domain, task, plan_file), callback=collect_result, error_callback=print_error)
+
+    pool.close()
+    pool.join()
+    pbar.close()

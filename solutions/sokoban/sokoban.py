@@ -51,7 +51,7 @@ def main():
     reader = PDDLReader()
     """
     pddl_problem = reader.parse_problem('../../sokoban/domain.pddl', '../../sokoban/training/easy/p04.pddl')
-    plan = parse_plan(pddl_problem, '../../sokoban/plans/training/easy/p04.plan')
+    plan = parse_plan(pddl_problem, 'training/easy/p04.plan')
     print(plan)
     print(f"Is valid? {apply_plan(pddl_problem, plan)}")
     """
@@ -60,15 +60,15 @@ def main():
     all_problems.extend([f"../../sokoban/testing/medium/p{p:02}.pddl" for p in range(1, 31)])
     all_problems.extend([f"../../sokoban/testing/hard/p{p:02}.pddl" for p in range(1, 31)])
 
-    all_plans = [f"../../sokoban/plans/training/easy/p{p:02}.plan" for p in range(1, 100)]
-    all_plans.extend([f"../../sokoban/plans/testing/easy/p{p:02}.plan" for p in range(1, 31)])
-    all_plans.extend([f"../../sokoban/plans/testing/medium/p{p:02}.plan" for p in range(1, 31)])
-    all_plans.extend([f"../../sokoban/plans/testing/hard/p{p:02}.plan" for p in range(1, 31)])
+    all_plans = [f"training/easy/p{p:02}.plan" for p in range(1, 100)]
+    all_plans.extend([f"testing/easy/p{p:02}.plan" for p in range(1, 31)])
+    all_plans.extend([f"testing/medium/p{p:02}.plan" for p in range(1, 31)])
+    all_plans.extend([f"testing/hard/p{p:02}.plan" for p in range(1, 31)])
 
-    for idx, prob in enumerate(all_problems):
+    for prob, plan_file in zip(all_problems, all_plans):
         print(f'Solving {prob}...')
         pddl_problem = reader.parse_problem('../../sokoban/domain.pddl', prob)
-        plan = parse_plan(pddl_problem, all_plans[idx])
+        plan = parse_plan(pddl_problem, plan_file)
         if not apply_plan(pddl_problem, plan):
             print(f"Problem {prob} failed!")
    # """
